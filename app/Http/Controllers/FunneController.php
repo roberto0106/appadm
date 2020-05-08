@@ -3,83 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Funne;
+use App\Http\Resources\FunneResource;
 use Illuminate\Http\Request;
 
 class FunneController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $funne = Funne::all();
+        return FunneResource::collection($funne);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
+        $new_funne = Funne::create([
+            'id'=>$request->id,
+            'order_id'=>$request->order_id,
+            'owner'=>$request->owner,
+            'status'=>$request->status,
+        ]);
+
+        return new FunneResource($new_funne);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Funne  $funne
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Funne $funne)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Funne  $funne
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(Funne $funne)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Funne  $funne
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, Funne $funne)
     {
-        //
+        $funne = Funne::find($funne->id);
+        $funne->fill($request->all())->save();
+
+        return new FunneResource($funne);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Funne  $funne
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Funne $funne)
     {
-        //
+        $funne = Funne::find($funne->id);
+        $funne->delete();
+
+        return response()->json(['message'=>'Funne is fone']);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Http\Resources\CustomerResource;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -14,7 +15,8 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        $customers = Customer::all();
+        return CustomerResource::collection($customers);
     }
 
     /**
@@ -35,7 +37,17 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $new_customer = Customer::create([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'address'=>$request->address,
+            'birthday'=>$request->birthday,
+            'phone'=>$request->phone,
+            'level'=>$request->level,
+            'status'=>$request->status
+        ]);
+
+        return new CustomerResource($new_customer);
     }
 
     /**
@@ -69,7 +81,8 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        $customer = Customer::find($customer->id);
+        $customer->fill($request->all())->save();
     }
 
     /**
@@ -80,6 +93,9 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+        $customer = Customer::find($customer->id);
+        $customer->delete();
+
+        return response()->json(['message' => 'Customer is gone',]);
     }
 }

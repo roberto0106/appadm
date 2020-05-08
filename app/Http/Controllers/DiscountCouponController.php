@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Discount_coupon;
+use App\Http\Resources\DiscountCouponResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class DiscountCouponController extends Controller
 {
@@ -14,7 +16,8 @@ class DiscountCouponController extends Controller
      */
     public function index()
     {
-        //
+        $discount_coupon = Discount_coupon::all();
+        return DiscountCouponResource::collection($discount_coupon);
     }
 
     /**
@@ -24,7 +27,7 @@ class DiscountCouponController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -35,7 +38,14 @@ class DiscountCouponController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $new_discount_coupon = Discount_coupon::create([
+            'name'=>$request->name,
+            'description'=>$request->description,
+            'status'=>$request->status,
+            'expire_in'=>$request->expire_in
+        ]);
+
+        return new DiscountCouponResource($new_discount_coupon);
     }
 
     /**
@@ -69,7 +79,10 @@ class DiscountCouponController extends Controller
      */
     public function update(Request $request, Discount_coupon $discount_coupon)
     {
-        //
+        $discount_coupon = Discount_coupon::find($discount_coupon->id);
+        $discount_coupon->fill($request->all())->save();
+
+        return new DiscountCouponResource($discount_coupon);
     }
 
     /**
@@ -80,6 +93,8 @@ class DiscountCouponController extends Controller
      */
     public function destroy(Discount_coupon $discount_coupon)
     {
-        //
+        $discount_coupon = Discount_coupon::find($discount_coupon->id);
+        $discount_coupon->delete();
+        return response()->json(['message' => 'Coupon is gone',]);
     }
 }

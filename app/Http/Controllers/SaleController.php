@@ -2,84 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SaleResource;
 use App\Sale;
 use Illuminate\Http\Request;
 
 class SaleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $sale = Sale::all();
+        return SaleResource::collection($sale);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
+        $new_sale = Sale::create([
+            'id'=>$request->id,
+            'order_id'=>$request->order_id,
+            'accumulated_value'=>$request->accumulated_value,
+            'status'=>$request->status,
+        ]);
+
+        return new SaleResource($new_sale);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Sale  $sale
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Sale $sale)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Sale  $sale
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(Sale $sale)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sale  $sale
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, Sale $sale)
     {
-        //
+        $sale = Sale::find($sale->id);
+        $sale->fill($request->all())->save();
+
+        return new SaleResource($sale);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Sale  $sale
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Sale $sale)
     {
-        //
+        $sale = Sale::find($sale->id);
+        $sale->delete();
+
+        return response()->json(['message'=>'Sale is fone']);
     }
 }

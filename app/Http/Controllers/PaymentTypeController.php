@@ -2,84 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PaymentTypeResource;
 use App\Payment_type;
 use Illuminate\Http\Request;
 
 class PaymentTypeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $payment_type = Payment_type::all();
+        return PaymentTypeResource::collection($payment_type);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
+        $new_payment_type = Payment_type::create([
+            'id'=>$request->id,
+            'description'=>$request->description,
+            'status'=>$request->status,
+        ]);
+
+        return new PaymentTypeResource($new_payment_type);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Payment_type  $payment_type
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Payment_type $payment_type)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Payment_type  $payment_type
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(Payment_type $payment_type)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Payment_type  $payment_type
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, Payment_type $payment_type)
     {
-        //
+        $payment_type = Payment_type::find($payment_type->id);
+        $payment_type->fill($request->all())->save();
+
+        return new PaymentTypeResource($payment_type);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Payment_type  $payment_type
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Payment_type $payment_type)
     {
-        //
+        $payment_type = Payment_type::find($payment_type->id);
+        $payment_type->delete();
+
+        return response()->json(['message'=>'PaymentType is fone']);
     }
 }
